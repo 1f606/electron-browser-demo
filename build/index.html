@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+  <title>111</title>
+  <style>
+    webview, html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+<noscript>
+  <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+</noscript>
+<div style="width:100%;display:flex;flex-direction:row">
+  <button id="houtui" style="width:33%; backgrund-color:red;border:none" onclick="goBackWebView()" >后退</button>
+  <button id="qianjin" style="width:33%; backgrund-color: red;border:none" onclick="goForwardWebView()" >前进</button>
+  <input id="addressBar" type="text"/>
+</div>
+<webview id="main" src="https://store-dev.newpearl.com/#/login" autosie="on" webpreferences="allowRunningInsecureContent, webSecurity=no" allowpopups></webview>
+<script>
+const addressBar = document.getElementById('addressBar')
+addressBar.addEventListener('keydown', function (e) {
+  if (e.keyCode === 13) {
+    webview.loadURL(addressBar.value)
+  }
+})
+var webview = onload = () => {
+    webview = document.querySelector('#main')
+  webview.addEventListener('console-message', (e) => {
+    console.log('webview console:', e.message)
+  })
+  webview.addEventListener('will-navigate', (url) => {
+    console.log('will-navigate', url);
+  })
+  webview.addEventListener('did-navigate', (url) => {
+    addressBar.value = url.url
+  })
+  webview.addEventListener('did-navigate-in-page', (isMainFrame, url) => {
+    let newUrl = webview.getURL()
+    if (newUrl) {
+      addressBar.value = newUrl
+    }
+  })
+}
+function goBackWebView(){
+  webview.goBack()
+}
+function goForwardWebView(){
+  webview.goForward()
+}
+</script>
+</body>
+</html>
